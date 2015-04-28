@@ -1,0 +1,4 @@
+[x] Study and implement WAR overlay: https://maven.apache.org/plugins/maven-war-plugin/overlays.html
+[x] Move domain.Address, Bank, Contact, Country, CountryGroup into separate module
+[ ] Move liquibase scripts for entities of Commun in Commun 
+[ ] Search in all files for TODO and FIXME and resolve them
