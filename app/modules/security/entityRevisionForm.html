@@ -1,0 +1,95 @@
+<div data-extend-template="modules/app.html" ng-controller="RevisionFormController">
+
+    <ul class="page-breadcrumb breadcrumb" data-block="page-breadcrumb">
+        <li>
+            <i class="fa fa-home"></i>
+            <a href="#/">Αρχική Σελίδα</a>
+            <i class="fa fa-angle-right"></i>
+        </li>
+        <li>
+            <a href="#/{{entityDefinition.url}}">{{entityDefinition.name.plural}}</a>
+            <i class="fa fa-angle-right"></i>
+        </li>
+        <li>
+            {{summary.id}} / {{summary.who.fullName}} / {{summary.when|date:'dd/MM/yyyy HH:mm:ss'}}
+        </li>
+    </ul>
+
+    <div class="page-content" data-block="content">
+        <div class="row">
+            <div class="col-md-12">
+                <!-- BEGIN EXAMPLE TABLE PORTLET-->
+                <div class="portlet box green">
+                    <div class="portlet-title">
+                        <div class="caption"><i class="fa fa-edit"></i>Στοιχεία {{entityDefinition.name.singularGeneral}}</div>
+                        <div class="actions">
+                            <button type="button" class="btn default" ng-click="close()">Κλείσιμο</button>
+                        </div>
+                    </div>
+                    <div class="portlet-body">
+                        <img alt="" ng-src="images/avatars/{{entity.who.avatar ? (entity.who.avatar.id || entity.who.avatar)+'.png' : 'gd.png'}}" width="20" height="20"/>
+                        <span>{{summary.who.fullName}} την {{summary.when|date:'dd/MM/yyyy HH:mm:ss'}} έκανε τις παρακάτω ενέργειες:</span>
+                        <p>{{summary.totalElements}}</p>
+
+                        <div infinite-scroll="loadMore()" infinite-scroll-distance="1">
+                            <div class="table-responsive" ng-repeat="entityChange in entityChanges">
+                                <div>
+                                <p><b>{{entityChange.revisionType=='MOD'?'Τροποποίηση ': (entityChange.revisionType=='DEL' ? 'Διαγραφή ' : 'Προσθήκη ')}}<a  bs-tooltip="'Προβολή '+entityDef.name.singularGeneral" ng-href="#/{{entityDef.url}}/{{entityChange.entityId}}/edit">{{entityDef.name.singularGeneral}}
+                                    <i class="fa fa-external-link"/></a></b>
+                                </p>
+                                </div>
+                                <table ng-if="entityChange.revisionType!='MOD'" class="table table-hover">
+                                    <thead>
+                                    <tr>
+                                        <th class="col-xs-2">Πεδίο</th>
+                                        <th ng-if="entityChange.revisionType=='ADD'" class="col-xs-5">Νέα τιμή</th>
+                                        <th ng-if="entityChange.revisionType=='DEL'" class="col-xs-5">Προηγούμενη τιμή</th>
+                                    </tr>
+                                    </thead>
+                                    <tbody>
+                                    <tr ng-repeat="propertyChange in entityChange.propertyChanges">
+                                        <td>{{propertyChange.path}}</td>
+                                        <td ng-if="entityChange.revisionType=='ADD'">{{propertyChange.newValue}}</td>
+                                        <td ng-if="entityChange.revisionType=='DEL'">{{propertyChange.oldValue}}</td>
+                                    </tr>
+                                    </tbody>
+                                </table>
+                                <table ng-if="entityChange.revisionType=='MOD'" class="table table-hover">
+                                    <thead>
+                                    <tr ng-if="hasNewOrOldValue">
+                                        <th class="col-xs-2">Πεδίο</th>
+                                        <th class="col-xs-5">Νέα τιμή</th>
+                                        <th class="col-xs-5">Προηγούμενη τιμή</th>
+                                    </tr>
+                                    </thead>
+                                    <tbody>
+                                    <tr ng-if="propertyChange.newValue||propertyChange.oldValue" ng-repeat="propertyChange in entityChange.propertyChanges">
+                                        <td>{{propertyChange.path}}</td>
+                                        <td>{{propertyChange.newValue?propertyChange.newValue:'-'}}</td>
+                                        <td>{{propertyChange.oldValue?propertyChange.oldValue:'-'}}</td>
+                                    </tr>
+                                    </tbody>
+                                    <tr ng-if="hasAddedOrRemoved">
+                                        <th class="col-xs-2">Πεδίο</th>
+                                        <th class="col-xs-5">Προστέθηκαν</th>
+                                        <th class="col-xs-5">Αφαιρέθηκαν</th>
+                                    </tr>
+                                    </thead>
+                                    <tbody>
+                                    <tr ng-if="propertyChange.added||propertyChange.removed" ng-repeat="propertyChange in entityChange.propertyChanges">
+                                        <td>{{propertyChange.path}}</td>
+                                        <td>{{propertyChange.added?propertyChange.added:'-'}}</td>
+                                        <td>{{propertyChange.removed?propertyChange.removed:'-'}}</td>
+                                    </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                        <div ng-show='loading'><i class="fa fa-spinner fa-spin"></i></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    </div>
+</div>

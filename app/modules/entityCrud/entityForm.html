@@ -1,0 +1,312 @@
+<div data-extend-template="modules/app.html" ng-controller="EntityFormCtrl">
+
+    <ul class="page-breadcrumb breadcrumb" data-block="page-breadcrumb">
+        <li>
+            <i class="fa fa-home"></i>
+            <a href="#/">Αρχική Σελίδα</a>
+            <i class="fa fa-angle-right"></i>
+        </li>
+        <li ng-if="entityDefinition.specialCaseOf">
+            <a href="#/{{entityDefinition.specialCaseOf.url}}">{{entityDefinition.specialCaseOf.name.plural}}</a>
+            <i class="fa fa-angle-right"></i>
+        </li>
+        <li>
+            <a href="#/{{entityDefinition.url}}">{{entityDefinition.name.plural}}</a>
+            <i class="fa fa-angle-right"></i>
+        </li>
+        <li>
+            {{entityDefinition.entityDisplayName ? entityDefinition.entityDisplayName(entity) : entity.name}}
+        </li>
+        <li class="pull-right">{{isNew ? 'Δημιουργία' : 'Επεξεργασία'}} εγγραφής</li>
+    </ul>
+
+    <div class="page-content" data-block="content">
+
+        <div class="row">
+            <div class="col-md-12">
+                <!-- BEGIN EXAMPLE TABLE PORTLET-->
+                <div class="portlet box green">
+                    <div class="portlet-title">
+                        <div class="caption"><i class="fa fa-edit"></i>Στοιχεία {{entityDefinition.name.singularGeneral}}</div>
+                        <!--<div class="tools">-->
+                            <!--<a href="" class="collapse"></a>-->
+                            <!--<a href="" data-toggle="modal" class="config"></a>-->
+                            <!--<a href="" class="reload"></a>-->
+                            <!--<a href="" class="remove"></a>-->
+                        <!--</div>-->
+                    </div>
+
+                    <div class="portlet-body form" cg-busy="{promise: entity}">
+                        <form name="entityForm" class="form-horizontal" novalidate sc-protect="!userCanEdit(entityDefinition, fieldDef)">
+                            <div class="form-body">
+                                <!--TODO replace following repeated elements with appropriate directives -->
+                                <div class="form-group" ng-repeat="fieldDef in entityFormFields(entityDefinition, entity)" ng-class="{ 'has-error' : entityForm[fieldDef.name].$invalid && (entityForm[fieldDef.name].$dirty || entityForm.submitted) }">
+                                    <label class="col-md-3 control-label">{{fieldDef.label}}
+                                        <span ng-if="!(fieldDef.optional && fieldDef.optional.call ? fieldDef.optional(entity, isNew) : fieldDef.optional || fieldDef.formula || fieldDef.multiValue)" class="required" bs-tooltip title="Υποχρεωτικό πεδίο">*</span>
+                                        <span ng-if="fieldDef.info" bs-tooltip="fieldDef.info" class="text-warning"><i class="fa fa-info-circle"></i></span>
+                                    </label>
+
+                                    <div ng-if="fieldDef.embedded && fieldDef.multiValue" class="col-md-9">
+
+                                        <div class="table-responsive">
+                                            <table class="table table-bordered" ng-cloak>
+                                                <thead>
+                                                <tr>
+                                                    <th ng-repeat="embeddedFieldDef in fieldDef.embedded" class="{{embeddedFieldDef.width ? 'col-xs-'+embeddedFieldDef.width : ''}}">
+                                                        {{embeddedFieldDef.label}}
+                                                        <span ng-if="!(embeddedFieldDef.optional && embeddedFieldDef.optional.call ? embeddedFieldDef.optional(entity, isNew) : embeddedFieldDef.optional || embeddedFieldDef.formula || embeddedFieldDef.multiValue)" class="required text-danger" bs-tooltip title="Υποχρεωτικό πεδίο">*</span>
+                                                        <span ng-if="embeddedFieldDef.info" bs-tooltip="embeddedFieldDef.info" class="text-warning"><i class="fa fa-info-circle"></i></span>
+                                                    </th>
+                                                    <th class="col-xs-1">
+                                                        <a ng-click="addListItem(getEntityFieldLeafParentScope(fieldDef.name), getEntityFieldLeafName(fieldDef.name))"
+                                                           ng-disabled="!(fieldDef.hasOwnProperty('canBeSetWhen') ? (fieldDef.canBeSetWhen.call ? fieldDef.canBeSetWhen(entity) : fieldDef.canBeSetWhen) : true)"
+                                                                class="btn btn-default btn-sm pull-right"
+                                                                href=""> &nbsp; Προσθήκη &nbsp;&nbsp; <i class="fa fa-plus"></i></a>
+                                                    </th>
+                                                </tr>
+                                                </thead>
+                                                <tbody>
+                                                <tr ng-repeat="item in getEntityFieldLeafParentScope(fieldDef.name)[getEntityFieldLeafName(fieldDef.name)]" ng-init="itemIndex = $index">
+                                                    <td ng-repeat="embeddedFieldDef in fieldDef.embedded"
+                                                        class="has-feedback"
+                                                        ng-class="{ 'has-error' : entityForm[fieldDef.name+'['+itemIndex+'].'+embeddedFieldDef.name].$invalid && (entityForm[fieldDef.name+'['+itemIndex+'].'+embeddedFieldDef.name].$dirty || entityForm.submitted) }"
+                                                        >
+
+                                                        <div ng-if="embeddedFieldDef.formula">
+                                                            <div class="form-control-static" ng-bind-html="formulaValue(embeddedFieldDef, item, entity)"></div>
+                                                        </div>
+
+                                                        <div ng-if="!embeddedFieldDef.formula" class="input-icon right">
+                                                            <i
+                                                                ng-if="entityForm[fieldDef.name+'['+itemIndex+'].'+embeddedFieldDef.name].$invalid && (entityForm[fieldDef.name+'['+itemIndex+'].'+embeddedFieldDef.name].$dirty || entityForm.submitted)"
+                                                                class="fa fa-warning form-control-feedback"
+                                                                bs-tooltip="entityForm[fieldDef.name+'['+itemIndex+'].'+embeddedFieldDef.name].$error.pattern ? (embeddedFieldDef.patternMessage || 'Πρέπει να είναι της μορφής '+ embeddedFieldDef.pattern) : entityForm[fieldDef.name+'['+itemIndex+'].'+embeddedFieldDef.name].$error.required ? 'Υποχρεωτικό πεδίο' : ''">
+                                                            </i>
+                                                            <i
+                                                                    ng-if="entityForm[fieldDef.name+'['+itemIndex+'].'+embeddedFieldDef.name+'endDateTime'].$invalid && (entityForm[fieldDef.name+'['+itemIndex+'].'+embeddedFieldDef.name+'endDateTime'].$dirty || entityForm.submitted)"
+                                                                    class="fa fa-warning form-control-feedback"
+                                                                    bs-tooltip="entityForm[fieldDef.name+'['+itemIndex+'].'+embeddedFieldDef.name].$error.pattern ? (embeddedFieldDef.patternMessage || 'Πρέπει να είναι της μορφής '+ embeddedFieldDef.pattern) : entityForm[fieldDef.name+'['+itemIndex+'].'+embeddedFieldDef.name].$error.required ? 'Υποχρεωτικό πεδίο' : ''">
+                                                            </i>
+
+                                                            <input ng-if="embeddedFieldDef.selectFrom" name="{{fieldDef.name+'['+itemIndex+'].'+embeddedFieldDef.name}}" type="hidden"
+                                                                   ui-select2="select2(embeddedFieldDef, embeddedFieldDef.selectFromOptions, item)"
+                                                                   ng-required="!(embeddedFieldDef.optional && embeddedFieldDef.optional.call ? embeddedFieldDef.optional(item, isNew) : embeddedFieldDef.optional)"
+                                                                   ng-model="item[embeddedFieldDef.name]"
+                                                                   class="form-control" placeholder="{{embeddedFieldDef.placeholder}}"
+                                                                   maxlength="{{embeddedFieldDef.length}}">
+                                                            <input ng-if="!embeddedFieldDef.selectFrom && !embeddedFieldDef.type"
+                                                                   ng-change="entityForm[embeddedFieldDef.name].$setValidity('server', true)"
+                                                                   name="{{fieldDef.name+'['+itemIndex+'].'+embeddedFieldDef.name}}"
+                                                                   ng-required="!(embeddedFieldDef.optional && embeddedFieldDef.optional.call ? embeddedFieldDef.optional(item, isNew) : embeddedFieldDef.optional)"
+                                                                   ng-model="item[embeddedFieldDef.name]"
+                                                                   type="text" class="form-control"
+                                                                   placeholder="{{embeddedFieldDef.placeholder}}"
+                                                                   maxlength="{{embeddedFieldDef.length}}" ng-pattern="{{embeddedFieldDef.pattern}}">
+                                                            <input ng-if="embeddedFieldDef.type.numeric"
+                                                                   ng-change="entityForm[embeddedFieldDef.name].$setValidity('server', true)"
+                                                                   name="{{fieldDef.name+'['+itemIndex+'].'+embeddedFieldDef.name}}"
+                                                                   ng-required="!(embeddedFieldDef.optional && embeddedFieldDef.optional.call ? embeddedFieldDef.optional(item, isNew) : embeddedFieldDef.optional)"
+                                                                   ng-model="item[embeddedFieldDef.name]"
+                                                                   type="text" class="form-control"
+                                                                   placeholder="{{embeddedFieldDef.placeholder}}"
+                                                                   maxlength="{{embeddedFieldDef.length}}" se-numeric data-number-format="{{embeddedFieldDef.type}}">
+                                                            <input ng-if="embeddedFieldDef.type.dateTime"
+                                                                   ng-change="entityForm[embeddedFieldDef.name].$setValidity('server', true)"
+                                                                   name="{{fieldDef.name+'['+itemIndex+'].'+embeddedFieldDef.name}}"
+                                                                   ng-required="!(embeddedFieldDef.optional && embeddedFieldDef.optional.call ? embeddedFieldDef.optional(item, isNew) : embeddedFieldDef.optional)"
+                                                                   ng-model="item[embeddedFieldDef.name]"
+                                                                   type="text" class="form-control"
+                                                                   placeholder="{{embeddedFieldDef.placeholder}}"
+                                                                   data-date-format="{{embeddedFieldDef.type.dateTime}}"
+                                                                   data-date-ceiling="{{embeddedFieldDef.type.ceiling}}" se-datetime>
+                                                            <input ng-if="embeddedFieldDef.type === 'boolean'"
+                                                                   ng-required="!(embeddedFieldDef.optional && embeddedFieldDef.optional.call ? embeddedFieldDef.optional(item, isNew) : embeddedFieldDef.optional)"
+                                                                   ng-model="item[embeddedFieldDef.name]"
+                                                                   name="{{fieldDef.name+'['+itemIndex+'].'+embeddedFieldDef.name}}"
+                                                                   type="checkbox" class="form-control">
+
+                                                            <div ng-if="embeddedFieldDef.type.dateRange"
+                                                                 class="input-daterange input-group"
+                                                                 data-date-format="{{datepickerDateFormat(embeddedFieldDef.type.dateRange.format)}}"
+                                                                 data-language="el" data-date-type="date" data-keyboard-navigation=""
+                                                                 bs-datepicker>
+                                                                <input class="input-sm form-control" type="text"
+                                                                       name="{{fieldDef.name+'['+itemIndex+'].'+embeddedFieldDef.name+'.startDateTime'}}"
+                                                                       ng-required="!(embeddedFieldDef.optional && embeddedFieldDef.optional.call ? embeddedFieldDef.optional(entity, isNew) : embeddedFieldDef.optional)"
+                                                                       ng-model="getEntityFieldLeafParentScope(embeddedFieldDef.name+'.startDateTime', item)[getEntityFieldLeafName(embeddedFieldDef.name+'.startDateTime')]"
+                                                                       placeholder="{{embeddedFieldDef.placeholder}}"
+                                                                       data-date-format="{{embeddedFieldDef.type.dateRange.format}}" se-datetime
+                                                                       bs-datepicker-bind-fix>
+                                                                <span class="input-group-addon">-</span>
+                                                                <input class="input-sm form-control" type="text"
+                                                                       name="{{fieldDef.name+'['+itemIndex+'].'+embeddedFieldDef.name+'.endDateTime'}}"
+                                                                       ng-required="!(embeddedFieldDef.optional && embeddedFieldDef.optional.call ? embeddedFieldDef.optional(entity, isNew) : embeddedFieldDef.optional)"
+                                                                       ng-model="getEntityFieldLeafParentScope(embeddedFieldDef.name+'.endDateTime', item)[getEntityFieldLeafName(embeddedFieldDef.name+'.endDateTime')]"
+                                                                       placeholder="{{embeddedFieldDef.placeholder}}"
+                                                                       data-date-format="{{embeddedFieldDef.type.dateRange.format}}" se-datetime
+                                                                       data-date-ceiling="true" bs-datepicker-bind-fix>
+                                                            </div>
+
+                                                        </div>
+                                                        <!--<span class="text-primary" ng-if="!embeddedFieldDef.type || embeddedFieldDef.type !== 'boolean'">{{fieldValue(item, embeddedFieldDef)}}</span>-->
+                                                        <!--<span class="text-primary" ng-if="embeddedFieldDef.type === 'boolean' && fieldValue(item, embeddedFieldDef)"><i class="fa fa-check"/></span>-->
+                                                    </td>
+                                                    <td ng-disabled="!(fieldDef.hasOwnProperty('canBeSetWhen') ? (fieldDef.canBeSetWhen.call ? fieldDef.canBeSetWhen(entity) : fieldDef.canBeSetWhen) : true)">
+                                                        <div class="col-xs-4" style="padding-left: 0px">
+                                                            <a ng-click="moveListItem(getEntityFieldLeafParentScope(fieldDef.name)[getEntityFieldLeafName(fieldDef.name)], $index, -1)"
+                                                               ng-hide="$first"
+                                                               class="btn btn-default btn-sm"
+                                                               title="Μετακίνηση Πάνω"
+                                                               href=""><i class="fa fa-arrow-up"></i>
+                                                            </a>
+                                                        </div>
+                                                        <div class="col-xs-4" style="padding-left: 0px">
+                                                            <a ng-click="moveListItem(getEntityFieldLeafParentScope(fieldDef.name)[getEntityFieldLeafName(fieldDef.name)], $index, +1)"
+                                                               ng-hide="$last"
+                                                               class="btn btn-default btn-sm"
+                                                               title="Μετακίνηση Κάτω"
+                                                               href=""><i class="fa fa-arrow-down"></i>
+                                                            </a>
+                                                        </div>
+                                                        <div class="col-xs-4" style="padding-left: 0px">
+                                                            <a ng-click="removeListItem(getEntityFieldLeafParentScope(fieldDef.name)[getEntityFieldLeafName(fieldDef.name)], $index)"
+                                                               class="btn btn-default btn-sm"
+                                                               title="Διαγραφή"
+                                                               href=""><i class="text-danger fa fa-times"></i>
+                                                            </a>
+                                                        </div>
+                                                    </td>
+                                                </tr>
+                                                </tbody>
+                                            </table>
+                                        </div>
+
+                                    </div>
+
+                                    <div ng-if="fieldDef.formula" class="col-md-9">
+                                        <div class="form-control-static" ng-bind-html="formulaValue(fieldDef, entity)"></div>
+                                    </div>
+
+                                    <div ng-if="!fieldDef.formula && !fieldDef.embedded" class="col-md-9">
+                                        <!--TODO add ng-change where missing -->
+                                        <!--TODO add ng-disabled where missing-->
+                                        <div ng-if="fieldDef.type.dateRange"
+                                             class="input-daterange input-group input-xlarge"
+                                             data-date-format="{{datepickerDateFormat(fieldDef.type.dateRange.format)}}"
+                                             data-language="el" data-date-type="date" data-keyboard-navigation=""
+                                             bs-datepicker>
+                                            <input class="input-sm form-control" type="text"
+                                                   name="{{fieldDef.name}}.startDateTime"
+                                                   ng-required="!(fieldDef.optional && fieldDef.optional.call ? fieldDef.optional(entity, isNew) : fieldDef.optional)"
+                                                   ng-model="getEntityFieldLeafParentScope(fieldDef.name+'.startDateTime')[getEntityFieldLeafName(fieldDef.name+'.startDateTime')]"
+                                                   placeholder="{{fieldDef.placeholder}}"
+                                                   data-date-format="{{fieldDef.type.dateRange.format}}" se-datetime
+                                                   bs-datepicker-bind-fix>
+                                            <span class="input-group-addon">έως</span>
+                                            <input class="input-sm form-control" type="text"
+                                                   name="{{fieldDef.name}}.endDateTime"
+                                                   ng-required="!(fieldDef.optional && fieldDef.optional.call ? fieldDef.optional(entity, isNew) : fieldDef.optional)"
+                                                   ng-model="getEntityFieldLeafParentScope(fieldDef.name+'.endDateTime')[getEntityFieldLeafName(fieldDef.name+'.endDateTime')]"
+                                                   placeholder="{{fieldDef.placeholder}}"
+                                                   data-date-format="{{fieldDef.type.dateRange.format}}" se-datetime
+                                                   data-date-ceiling="true" bs-datepicker-bind-fix>
+                                        </div>
+
+
+                                        <div ng-if="!fieldDef.type.dateRange" class="input-group input-xlarge">
+                                            <input ng-if="!fieldDef.selectFrom && !fieldDef.type"
+                                                   ng-change="entityForm[fieldDef.name].$setValidity('server', true)"
+                                                   name="{{fieldDef.name}}"
+                                                   ng-disabled="!(fieldDef.hasOwnProperty('canBeSetWhen') ? (fieldDef.canBeSetWhen.call ? fieldDef.canBeSetWhen(entity) : fieldDef.canBeSetWhen) : true)"
+                                                   ng-required="!(fieldDef.optional && fieldDef.optional.call ? fieldDef.optional(entity, isNew) : fieldDef.optional)"
+                                                   ng-model="getEntityFieldLeafParentScope(fieldDef.name)[getEntityFieldLeafName(fieldDef.name)]"
+                                                   type="text" class="form-control"
+                                                   placeholder="{{fieldDef.placeholder}}"
+                                                   maxlength="{{fieldDef.length}}" ng-pattern="{{fieldDef.pattern}}">
+                                            <input ng-if="fieldDef.type.passwd"
+                                                   ng-change="entityForm[fieldDef.name].$setValidity('server', true)"
+                                                   name="{{fieldDef.name}}"
+                                                   ng-required="!(fieldDef.optional && fieldDef.optional.call ? fieldDef.optional(entity, isNew) : fieldDef.optional)"
+                                                   ng-model="getEntityFieldLeafParentScope(fieldDef.name)[getEntityFieldLeafName(fieldDef.name)]"
+                                                   type="password" class="form-control"
+                                                   placeholder="{{fieldDef.placeholder}}"
+                                                   maxlength="{{fieldDef.length}}" ng-pattern="{{fieldDef.pattern}}">
+                                            <input ng-if="fieldDef.type.dateTime" 
+                                                   ng-disabled="!(fieldDef.hasOwnProperty('canBeSetWhen') ? (fieldDef.canBeSetWhen.call ? fieldDef.canBeSetWhen(entity) : fieldDef.canBeSetWhen) : true)"
+                                                   ng-required="!(fieldDef.optional && fieldDef.optional.call ? fieldDef.optional(entity, isNew) : fieldDef.optional)"
+                                                   ng-model="getEntityFieldLeafParentScope(fieldDef.name)[getEntityFieldLeafName(fieldDef.name)]"
+                                                   type="text" class="form-control"
+                                                   name="{{fieldDef.name}}"
+                                                   placeholder="{{fieldDef.placeholder}}"
+                                                   data-date-format="{{fieldDef.type.dateTime}}"
+                                                   data-date-ceiling="{{fieldDef.type.ceiling}}" se-datetime>
+                                            <input ng-if="fieldDef.type === 'boolean'"
+                                                   ng-required="!(fieldDef.optional && fieldDef.optional.call ? fieldDef.optional(entity, isNew) : fieldDef.optional)"
+                                                   ng-model="getEntityFieldLeafParentScope(fieldDef.name)[getEntityFieldLeafName(fieldDef.name)]"
+                                                   name="{{fieldDef.name}}"
+                                                   type="checkbox" class="form-control">
+                                            <input ng-if="fieldDef.selectFrom"
+                                                   name="{{fieldDef.name}}"
+                                                   ng-disabled="!(fieldDef.hasOwnProperty('canBeSetWhen') ? (fieldDef.canBeSetWhen.call ? fieldDef.canBeSetWhen(entity) : fieldDef.canBeSetWhen) : true)"
+                                                   type="hidden"
+                                                   ui-select2="select2(fieldDef)"
+                                                   ng-required="!(fieldDef.optional && fieldDef.optional.call ? fieldDef.optional(entity, isNew) : fieldDef.optional)"
+                                                   ng-model="getEntityFieldLeafParentScope(fieldDef.name)[getEntityFieldLeafName(fieldDef.name)]"
+                                                   class="form-control" placeholder="{{fieldDef.placeholder}}"
+                                                   maxlength="{{fieldDef.length}}">
+                                            <se-select-addon data-field="fieldDef" data-extra-class="select2addon-mr"></se-select-addon>
+                                        </div>
+                                        <div ng-if="fieldDef.type.numeric" class="input-group input-xlarge input-icon right">
+                                            <input ng-change="entityForm[fieldDef.name].$setValidity('server', true)"
+                                                   name="{{fieldDef.name}}"
+                                                   ng-disabled="!(fieldDef.hasOwnProperty('canBeSetWhen') ? (fieldDef.canBeSetWhen.call ? fieldDef.canBeSetWhen(entity) : fieldDef.canBeSetWhen) : true)"
+                                                   ng-required="!(fieldDef.optional && fieldDef.optional.call ? fieldDef.optional(entity, isNew) : fieldDef.optional)"
+                                                   ng-model="getEntityFieldLeafParentScope(fieldDef.name)[getEntityFieldLeafName(fieldDef.name)]"
+                                                   type="text" class="form-control"
+                                                   placeholder="{{fieldDef.placeholder}}"
+                                                   se-numeric
+                                                   data-number-format="{{fieldDef.type}}"
+                                                   maxlength="{{fieldDef.length}}">
+                                        </div>
+                                        <span ng-show="(entityForm[fieldDef.name].$dirty || entityForm.submitted) && entityForm[fieldDef.name].$error.required"
+                                              class="help-block">Υποχρεωτικό πεδίο</span>
+                                        <!--<span ng-show="entityForm[fieldDef.name].$dirty && entityForm[fieldDef.name].$error.pattern"
+                                              class="help-block">{{fieldDef.patternMessage || 'Πρέπει να είναι της μορφής '+ fieldDef.pattern}}</span> -->
+                                        <span ng-show="entityForm[fieldDef.name].$dirty && entityForm[fieldDef.name].$error.seDatetime && fieldDef.type.dateTime === 'dd/MM/yyyy HH:mm'"
+                                              class="help-block">π.χ. 15/02/14 22:12 ή 150214 2212 ή μόνο 15 2212 ή μόνο 2212 κλπ</span>
+                                        <span ng-show="entityForm[fieldDef.name].$dirty && entityForm[fieldDef.name].$error.seDatetime && fieldDef.type.dateTime === 'dd/MM/yyyy'"
+                                              class="help-block">π.χ. 15/02/14 ή 150214 ή μόνο 15 κλπ</span>
+                                        <span ng-show="entityForm[fieldDef.name].$dirty && entityForm[fieldDef.name].$error.server"
+                                              class="help-block">{{entityForm[fieldDef.name].$error.server}}</span>
+                                        <span class = "col-md-4 help-block" ng-show="entityForm[fieldDef.name].$dirty && fieldDef.name === 'password'">
+                                            {{passwordMinChars ? ('Ο αριθμός χαρακτήρων του συνθηματικού πρέπει να είναι ανάμεσα σε ' + passwordMinChars + ' και ' +
+                                            passwordMaxChars + ' και να περιέχει το λιγότερο: ' + passwordMinCap + (passwordMinCap != 1 ? ' κεφαλαίους χαρακτήρες, ' : ' κεφαλαίο χαρακτήρα, ') +
+                                            passwordMinLow + (passwordMinLow != 1 ? ' μικρούς χαρακτήρες, ' : ' μικρό χαρακτήρα, ') +
+                                            passwordMinNum + (passwordMinNum != 1 ?  ' αριθμούς και ' :' αριθμό και ') +
+                                            passwordMinSpecial + (passwordMinSpecial != 1 ? ' ειδικούς χαρακτήρες όπως π.χ (!, @, #, $, %)' : ' ειδικό χαρακτήρα όπως π.χ (!, @, #, $, %)')) : ''}}
+                                        </span>
+
+                                    </div>
+                                </div>
+                            </div>
+                               <se-audit-info></se-audit-info>
+                               <se-form-errors></se-form-errors>
+                               <div class="form-actions fluid" cg-busy="{promise: submissionPromise}">
+                                   <div class="col-md-offset-3 col-md-9">
+                                       <button type="submit" ng-disabled="entityForm.$pristine || entityForm.submitInProgress" class="btn green" ng-click="canPerformAction(entityDefinition.url, 'update') || entityDefinition.isUserProfile ? save(close) : ''">
+                                           <i ng-if="!(canPerformAction(entityDefinition.url, 'update') || entityDefinition.isUserProfile)" class="fa fa-lock app-menu-icon" bs-tooltip title="Απαγορεύεται η πρόσβαση"></i> Αποθήκευση και κλείσιμο</button>
+                                       <button ng-disabled="entityForm.submitInProgress" ng-if="!(isNew || entityDefinition.isUserProfile)" type="button" class="btn btn-danger" ng-click="canPerformAction(entityDefinition.url, 'delete') ? remove() : ''">
+                                           <i ng-if="!canPerformAction(entityDefinition.url, 'delete')" class="fa fa-lock app-menu-icon" bs-tooltip title="Απαγορεύεται η πρόσβαση"></i> Διαγραφή</button>
+                                       <button type="button" class="btn default" ng-click="close()">Κλείσιμο</button>
+                                   </div>
+                               </div>
+                           </form>
+                   </div>
+
+               </div>
+           </div>
+       </div>
+
+   </div>
+
+</div>

@@ -1,0 +1,68 @@
+<div class="modal-dialog">
+    <div class="modal-content">
+        <div class="modal-header"><h3>{{entityDefinition.name.singular}} - <small>Σύνθετη αναζήτηση</small></h3></div>
+        <div class="row modal-body" style="overflow:hidden;">
+            <div class="col-md-12">
+                <div class="portlet box green">
+                    <div class="portlet-title">
+                        <div class="caption"><i class="fa fa-edit"></i>Κριτήρια</div>
+                    </div>
+                    <div class="portlet-body">
+                        <div class="row">
+                            <div class="col-md-12">
+                                <form name="criteriaForm" class="form-horizontal" novalidate>
+                                    <div class="form-body">
+                                        <div class="row">
+                                            <div class="form-group">
+                                                <label class="control-label col-md-5">Χρήστης</label>
+                                                <div class="col-md-6">
+                                                    <input type="hidden" ng-model="criteria.who"
+                                                           class="form-control" ui-select2="select2(entityDefinition.advancedSearch.fieldsMap.who)">
+                                                </div>
+                                            </div>
+                                            <div class="form-group" ng-class="{ 'has-error' : criteriaForm['dateFrom'].$invalid && criteriaForm['dateFrom'].$dirty }">
+                                                <label class="control-label col-md-5">Ημερομηνία από
+                                                    <span class="required" bs-tooltip title="Υποχρεωτικό πεδίο">*</span>
+                                                </label>
+                                                <div class="col-md-5">
+                                                    <input type="text" name="dateFrom" ng-model="criteria.dateFrom"
+                                                           class="form-control" data-language='el' data-date-format="dd/mm/yyyy" data-date-type="number" bs-datepicker>
+                                                    <span ng-show="criteriaForm['dateFrom'].$dirty && criteriaForm['dateFrom'].$error.seDatetime" class="help-block">π.χ. 15/02/14 22:12 ή 150214 2212 ή μόνο 15 2212 ή μόνο 2212 κλπ</span>
+                                                </div>
+                                            </div>
+                                            <div class="form-group" ng-class="{ 'has-error' : criteriaForm['dateTo'].$invalid && criteriaForm['dateTo'].$dirty }">
+                                                <label class="control-label col-md-5">Ημερομηνία έως
+                                                    <span class="required" bs-tooltip title="Υποχρεωτικό πεδίο">*</span>
+                                                </label>
+                                                <div class="col-md-5">
+                                                    <input type="text" name="dateTo" ng-model="criteria.dateTo"
+                                                           class="form-control" data-language='el' data-date-format="dd/mm/yyyy" data-date-type="number" bs-datepicker>
+                                                    <span ng-show="criteriaForm['dateTo'].$dirty && criteriaForm['dateTo'].$error.seDatetime" class="help-block">π.χ. 15/02/14 22:12 ή 150214 2212 ή μόνο 15 2212 ή μόνο 2212 κλπ</span>
+                                                </div>
+                                            </div>
+                                            <div class="form-group">
+                                                <label class="control-label col-md-5">Οντότητα</label>
+                                                <div class="col-md-6">
+                                                    <input type="hidden" ng-model="criteria.entityName"
+                                                           class="form-control" ui-select2="select2(entityDefinition.advancedSearch.fieldsMap.entityName, true)">
+                                                </div>
+                                            </div>
+
+                                        </div>
+                                    </div>
+                                    <div class="form-actions fluid">
+                                        <div class="col-md-offset-3 col-md-9">
+                                            <button type="submit" class="btn green" ng-click="closeAndSearch()">Αναζήτηση</button>
+                                            <button type="button" class="btn btn-danger" ng-click="clear()">Καθαρισμός</button>
+                                            <button type="button" class="btn default" ng-click="close()">Κλείσιμο</button>
+                                        </div>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

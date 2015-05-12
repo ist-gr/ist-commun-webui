@@ -1,0 +1,19 @@
+European Union Public License 1.1
+
+Copyright (c) 2013-2015 the original author or authors.
+
+To read the text and preamble of the European Union Public Licence (EUPL) version 1.1, available in 22 official languages of the European Union
+open the following URL in a web browser:
+https://joinup.ec.europa.eu/software/page/eupl/licence-eupl
+
+~~~
+FIXME: Write the license content and make sure that is compatible with the third party components used. If license is changed you should also change the value in the "license" element into the ./package.json file.
+
+See:
+- https://joinup.ec.europa.eu/software/page/eupl/licence-eupl
+- https://joinup.ec.europa.eu/system/files/guidelines/EUPL%201.1%20Guidelines%20EL.pdf
+- http://el.wikipedia.org/wiki/%CE%86%CE%B4%CE%B5%CE%B9%CE%B1_%CE%94%CE%B7%CE%BC%CF%8C%CF%83%CE%B9%CE%B1%CF%82_%CE%A7%CF%81%CE%AE%CF%83%CE%B7%CF%82_%CE%B3%CE%B9%CE%B1_%CF%84%CE%B7%CE%BD_%CE%95%CF%85%CF%81%CF%89%CF%80%CE%B1%CF%8A%CE%BA%CE%AE_%CE%88%CE%BD%CF%89%CF%83%CE%B7
+- Να μάθουμε ποιές είναι οι άδειες που χρησιμοποιούμε στο backend & στο front-end και να βεβαιωθούμε ότι είναι συμβατές με την EUPL
+    grunt license
+    https://joinup.ec.europa.eu/software/page/eupl/eupl-compatible-open-source-licences
+~~~

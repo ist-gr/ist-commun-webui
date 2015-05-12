@@ -1,0 +1,8 @@
+<a class="select2addon" ng-class="extraClass" tabindex="-1"
+   ng-if="fieldDef.selectFrom.url && !fieldDef.selectFrom.readOnly && userCanView(fieldDef.selectFrom)"
+   ng-href="{{getFormUrlForReferencedEntity(entity, fieldDef)}}"
+   bs-tooltip="(!fieldDef.multiValue && getEntityFieldLeafParentScope(fieldDef.name)[getEntityFieldLeafName(fieldDef.name)] ? 'Επεξεργασία ' : 'Δημιουργία ')+fieldDef.selectFrom.name.singularGeneral"
+   data-delay="1000" data-trigger="hover">
+    <i ng-if="!fieldDef.multiValue && getEntityFieldLeafParentScope(fieldDef.name)[getEntityFieldLeafName(fieldDef.name)]" class="fa fa-pencil"/>
+    <i ng-if="fieldDef.multiValue || !getEntityFieldLeafParentScope(fieldDef.name)[getEntityFieldLeafName(fieldDef.name)]" class="fa fa-plus"/>
+</a>

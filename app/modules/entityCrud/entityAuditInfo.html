@@ -1,0 +1,68 @@
+<div ng-if="!isNew && (entity.lastModifiedOn || entity.createdOn || entity.version)" class="panel-group">
+    <div class="col-md-12">
+        <div class="panel panel-default">
+            <div class="panel-heading">
+                <h4 class="panel-title">
+                    <span ng-if="entity.lastModifiedOn">
+                        <span>Τελευταία τροποποίηση:</span>
+                        <img alt="" ng-src="images/avatars/{{entity.lastModifiedBy.avatar ? (entity.lastModifiedBy.avatar.id || entity.lastModifiedBy.avatar)+'.png' : 'gd.png'}}" width="20" height="20"/>
+                        <span>{{entity.lastModifiedBy.fullName}} την {{entity.lastModifiedOn|date:'dd/MM/yyyy HH:mm:ss'}}</span>
+                    </span>
+                    <a data-toggle="collapse" href="" data-parent="#accordion" data-target="#collapseOne"  ng-click="autoScroll = !autoScroll" >
+                        Περισσότερα...
+                    </a><i class="fa" ng-class="{'fa-angle-right':!autoScroll, 'fa-angle-down': autoScroll}"></i>
+                </h4>
+            </div>
+            <div id="collapseOne" ng-class="{in: autoScroll}" class="panel-collapse collapse" >
+                <div class="panel-body">
+                    <div ng-if="entity.createdOn" class="row">
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label class="control-label col-md-4">Δημιουργήθηκε την</label>
+                                <div class="col-md-4">
+                                    <p class="form-control-static">
+                                        {{entity.createdOn|date:'dd/MM/yyyy HH:mm:ss'}}
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label class="control-label col-md-4">Δημιουργήθηκε από</label>
+                                <div class="col-md-4">
+                                    <img alt="" ng-src="images/avatars/{{entity.createdBy.avatar ? (entity.createdBy.avatar.id || entity.createdBy.avatar) + '.png' : 'gd.png'}}" width="29" height="29"/>
+                                                                <span class="form-control-static">
+                                                                    {{entity.createdBy.fullName}}
+                                                                </span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div ng-if="entity.version" class="row">
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label class="control-label col-md-4">Τελευταία αλλαγή{{entity.version === undefined ? '' : ' ('+entity.version+'η)'}}</label>
+                                <div class="col-md-4">
+                                    <p class="form-control-static">
+                                        {{entity.lastModifiedOn|date:'dd/MM/yyyy HH:mm:ss'}}
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label class="control-label col-md-4">Τελευταία αλλαγή από</label>
+                                <div class="col-md-4">
+                                    <img alt="" ng-src="images/avatars/{{entity.lastModifiedBy.avatar ? (entity.lastModifiedBy.avatar.id || entity.lastModifiedBy.avatar) + '.png' : 'gd.png'}}" width="29" height="29"/>
+                                                                <span class="form-control-static">
+                                                                    {{entity.lastModifiedBy.fullName}}
+                                                                </span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

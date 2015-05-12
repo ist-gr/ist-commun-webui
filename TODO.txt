@@ -1,0 +1,3 @@
+[x] main.js of client app should not include requirejs configuration of framework. See also https://github.com/jrburke/requirejs/wiki/Patterns-for-separating-config-from-the-main-module
+[ ] Remove metronic dependency from framework
+[ ] Document usage and contribution
