@@ -1,0 +1,79 @@
+<div data-extend-template="modules/app.html">
+
+    <ul class="page-breadcrumb breadcrumb" data-block="page-breadcrumb">
+        <li>
+            <i class="fa fa-home"></i>
+            <a href="#/">Αρχική Σελίδα</a>
+            <i class="fa fa-angle-right"></i>
+        </li>
+        <li>Ρυθμίσεις Συστήματος</li>
+    </ul>
+
+    <div class="page-content" data-block="content" ng-controller="LogsController">
+
+        <div class="row">
+            <div class="col-md-12">
+                <!-- BEGIN EXAMPLE TABLE PORTLET-->
+                <div class="portlet box blue">
+
+                    <div class="portlet-title">
+                        <div class="caption"><i class="fa fa-cogs"></i>Ρυθμίσεις Αρχείων Καταγραφής (Logs)
+                        </div>
+                    </div>
+
+                    <div class="portlet-body">
+
+                        <div id="sample_1_wrapper" class="dataTables_wrapper form-inline" role="grid">
+
+                            <div class="row">
+
+                                <div class="col-xs-6 col-md-4">
+                                    <form ng-if="!entityDefinition.noSearch" class="form-search">
+                                        <div class="input-group">
+                                            <input type="text" ng-model="log.filter"
+                                                   placeholder="Φίλτρο..." class="form-control" autofocus>
+                                        </div>
+                                    </form>
+                                </div>
+                                <div class="col-xs-6 col-md-8">
+                                    <div id="sample_1_info" class="pull-right dataTables_info">
+                                        <span ng-if="loggers.length > 0">Σύνολο: {{ loggers.length }} loggers</span>
+                                        <span ng-if="loggers.length === 0">Δεν βρέθηκαν εγγραφές</span>
+                                    </div>
+                                </div>
+                                <div id="sample_1_processing" class="dataTables_processing" style="visibility: hidden;">
+                                    <i class="fa fa-coffee"></i>&nbsp;Παρακαλώ περιμένετε...
+                                </div>
+                            </div>
+
+                            <div class="table-responsive">
+                                <table class="table table-condensed table-striped table-bordered table-responsive">
+                                    <thead>
+                                    <tr title="Κλικ για ταξινόμηση">
+                                        <th ng-click="predicate = 'name'; reverse=!reverse" >Όνομα</th>
+                                        <th ng-click="predicate = 'level'; reverse=!reverse">Επίπεδο</th>
+                                    </tr>
+                                    </thead>
+
+                                    <tr ng-repeat="logger in loggers | filter:log.filter | orderBy:predicate:reverse">
+                                        <td><small>{{logger.name | characters:140}}</small></td>
+                                        <td>
+                                            <button ng-click="changeLevel(logger.name, 'TRACE')" ng-class="(logger.level=='TRACE') ? 'btn-danger' : 'btn-default'" class="btn btn-default btn-xs">TRACE</button>
+                                            <button ng-click="changeLevel(logger.name, 'DEBUG')" ng-class="(logger.level=='DEBUG') ? 'btn-warning' : 'btn-default'" class="btn btn-default btn-xs">DEBUG</button>
+                                            <button ng-click="changeLevel(logger.name, 'INFO')" ng-class="(logger.level=='INFO') ? 'btn-info' : 'btn-default'" class="btn btn-default btn-xs">INFO</button>
+                                            <button ng-click="changeLevel(logger.name, 'WARN')" ng-class="(logger.level=='WARN') ? 'btn-success' : 'btn-default'" class="btn btn-default btn-xs">WARN</button>
+                                            <button ng-click="changeLevel(logger.name, 'ERROR')" ng-class="(logger.level=='ERROR') ? 'btn-primary' : 'btn-default'" class="btn btn-default btn-xs">ERROR</button>
+                                        </td>
+                                    </tr>
+                                </table>
+                            </div>
+
+                        </div>
+                    </div>
+                </div>
+                <!-- END EXAMPLE TABLE PORTLET-->
+            </div>
+        </div>
+
+    </div>
+</div>

@@ -1,0 +1,18 @@
+<div ng-if="formErrors">
+    <div class="col-md-12">
+        <div class="panel panel-danger">
+            <div class="panel-heading"><strong>{{formErrors.title}}</strong></div>
+            <ul class="tabbable list-group">
+                <li ng-repeat="err in formErrors.list"
+                    class="list-group-item">
+                    <a ng-if="err.field && err.field.label && (entityForm[err.property] != undefined)" href="" ng-click="setFocus(err)">
+                        <strong class="text-danger">{{err.field.label}}:</strong> {{err.message}}
+                    </a>
+                    <span ng-if="!err.field || !err.field.label || (entityForm[err.property] == undefined)">
+                        <strong ng-if="err.property" class="text-danger">{{err.field && err.field.label ? err.field.label : err.property}}:</strong> {{err.message}}
+                    </span>
+                </li>
+            </ul>
+        </div>
+    </div>
+</div>

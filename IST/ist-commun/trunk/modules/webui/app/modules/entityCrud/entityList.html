@@ -1,0 +1,118 @@
+<div data-extend-template="modules/app.html">
+
+    <ul class="page-breadcrumb breadcrumb" data-block="page-breadcrumb">
+        <li>
+            <i class="fa fa-home"></i>
+            <a href="#/">Αρχική Σελίδα</a>
+            <i class="fa fa-angle-right"></i>
+        </li>
+        <li ng-if="entityDefinition.specialCaseOf">
+            <a href="#/{{entityDefinition.specialCaseOf.url}}">{{entityDefinition.specialCaseOf.name.plural}}</a>
+            <i class="fa fa-angle-right"></i>
+        </li>
+        <li>{{entityDefinition.name.plural}}</li>
+        <li class="pull-right">
+            <span ng-if="!entityDefinition.readOnly">Διαχείριση</span>
+            <span ng-if="entityDefinition.readOnly">Επισκόπηση</span>
+            αρχείου
+        </li>
+    </ul>
+
+    <div class="page-content" data-block="content" ng-controller="EntityListCtrl">
+
+        <div class="row">
+            <div class="col-md-12">
+                <!-- BEGIN EXAMPLE TABLE PORTLET-->
+                <div class="portlet box blue">
+
+                    <div class="portlet-title">
+                        <div class="caption"><i class="fa fa-edit"></i>{{entityDefinition.name.plural}}
+                            <a style="color: rgb(255,255,255)" ng-if="search.criteriaDescription" href="" ng-click="openAdvancedSearchDialog()">({{search.criteriaDescription}})</a>
+                        </div>
+
+                        <div class="actions">
+                            <a ng-if="!entityDefinition.readOnly && !entityDefinition.actions" href="" ng-href="{{canPerformAction(entityDefinition.url, 'create') ? getActionUrl() : ''}}" class="btn green">
+                                <i ng-if="!canPerformAction(entityDefinition.url, 'create')" class="fa fa-lock app-menu-icon" bs-tooltip title="Απαγορεύεται η πρόσβαση"></i>
+                                <i class="fa fa-plus"></i>
+                                 Προσθήκη</a>
+
+                            <a ng-repeat="act in entityDefinition.actions | filter:{type:'constructor'}" ng-href="{{canPerformAction(entityDefinition.url, 'create') ? getActionUrl(act) : ''}}" class="btn {{act.color}}">
+                                <i ng-if="!canPerformAction(entityDefinition.url, 'create')" class="fa fa-lock app-menu-icon" bs-tooltip title="Απαγορεύεται η πρόσβαση"></i>
+                                <i class="fa {{act.iconleft}}"></i>
+                                {{act.text}}
+                                <i class="fa {{act.iconright}}"></i>
+                            </a>
+
+                            <a ng-repeat="act in entityDefinition.actions | filter:{type:'collection', isUsedFrequently: true}"
+                               ng-href="{{canPerformAction(act.authority.url || entityDefinition.url, act.authority.operation) ? getActionUrl(act) : ''}}"
+                               ng-click="canPerformAction(act.authority.url || entityDefinition.url, act.authority.operation) ? act.method(gridOptions.selectedItems) : ''"
+                               class="btn {{act.color}}"
+                               target="_blank">
+                                <i ng-if="!canPerformAction(act.authority.url || entityDefinition.url, act.authority.operation)" class="fa fa-lock app-menu-icon" bs-tooltip title="Απαγορεύεται η πρόσβαση"></i>
+                                <i ng-if="act.iconleft" class="fa {{act.iconleft}}"></i>
+                                {{act.text}}
+                                <i ng-if="act.iconright" class="fa {{act.iconright}}"></i>
+                            </a>
+
+                            <div class="btn-group">
+                                <a class="btn yellow" href="" data-toggle="dropdown">
+                                    <i class="fa fa-user"></i> Ενέργειες
+                                    <i class="fa fa-angle-down"></i>
+                                </a>
+                                <ul class="dropdown-menu pull-right">
+                                    <li><a href="" ng-click="canPerformAction(entityDefinition.url, 'view') ? exportJson() : ''"><i ng-if="!canPerformAction(entityDefinition.url, 'view')" class="fa fa-lock" bs-tooltip title="Απαγορεύεται η πρόσβαση"></i>Εξαγωγή σε Αρχείο</a></li>
+                                    <li ng-if="!entityDefinition.readOnly"><a href="" ng-click="canPerformAction(entityDefinition.url, 'create') ? importFile() : ''"><i ng-if="!canPerformAction(entityDefinition.url, 'create')" class="fa fa-lock" bs-tooltip title="Απαγορεύεται η πρόσβαση"></i>Εισαγωγή από Αρχείο</a></li>
+                                    <li ng-repeat="act in entityDefinition.actions | filter:{type:'collection'}">
+                                        <a ng-if="!act.isUsedFrequently"
+                                           ng-href="{{canPerformAction(act.authority.url || entityDefinition.url, act.authority.operation) ? getActionUrl(act) : ''}}"
+                                           ng-click="canPerformAction(act.authority.url || entityDefinition.url, act.authority.operation) ? act.method(gridOptions.selectedItems) : ''"
+                                           class="btn {{act.color}}"
+                                           target="_blank">
+                                            <i ng-if="!canPerformAction(act.authority.url || entityDefinition.url, act.authority.operation)" class="fa fa-lock app-menu-icon" bs-tooltip title="Απαγορεύεται η πρόσβαση"></i>
+                                            <i ng-if="act.iconleft" class="fa {{act.iconleft}}"></i>
+                                            {{act.text}}
+                                            <i ng-if="act.iconright" class="fa {{act.iconright}}"></i>
+                                        </a>
+                                    </li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="portlet-body">
+
+                        <div id="sample_1_wrapper" class="dataTables_wrapper dataTables_extended_wrapper no-footer" role="grid" cg-busy="{promise: entityList}" >
+
+                            <div class="row">
+                                <div class="col-xs-6 col-md-4 col-xs-offset-6 col-md-offset-8">
+                                    <form ng-if="!entityDefinition.noSearch" class="form-search">
+                                        <div class="input-group">
+
+                                            <input type="text" ng-model="search.term"
+                                                   placeholder="Αναζήτηση... (κεφαλαία υπονοούν κωδικό)" class="form-control" autofocus>
+                                            <div class="input-group-btn">
+                                                <button type="submit" ng-click="filter(search.term)" class="btn btn-default btn-primary">
+                                                    <span class="glyphicon glyphicon-search" data-delay="500" data-trigger="hover" bs-tooltip title="Αναζήτηση"></span>
+                                                </button>
+                                            </div>
+                                            <div class="input-group-btn" ng-if="entityDefinition.advancedSearch">
+                                                <button type="submit" ng-click="openAdvancedSearchDialog()" class="btn green">
+                                                    <span class="fa fa-ellipsis-h" data-delay="500" data-trigger="hover" bs-tooltip title="Σύνθετη Αναζήτηση"></span>
+                                                </button>
+                                            </div>
+                                        </div>
+                                    </form>
+                                </div>
+                            </div>
+                            <div ng-grid="gridOptions" class="gridStyle full-height-portlet">
+                            </div>
+
+                        </div>
+                    </div>
+                </div>
+                <!-- END EXAMPLE TABLE PORTLET-->
+            </div>
+        </div>
+
+    </div>
+</div>

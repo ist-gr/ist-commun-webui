@@ -1,0 +1,61 @@
+{
+  "name": "ist-commun-webui",
+  "version": "0.0.0",
+  "authors": [
+    "Antonis Apostolakis <apostolakis.antonis@gmail.com>"
+  ],
+  "moduleType": [
+    "amd"
+  ],
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "app/bower_components",
+    "test",
+    "tests"
+  ],
+  "dependencies": {
+    "angular": "~1.2.0",
+    "angular-busy": "~4.0.4",
+    "jquery": "~1.10.2",
+    "angular-resource": "~1.2.0",
+    "angular-sanitize": "~1.2.0",
+    "angular-route": "~1.2.0",
+    "FileSaver": "*",
+    "ng-file-upload": "~1.1.11",
+    "ng-grid": "~2.0.14",
+    "excelbuilder": "*",
+    "angular-ui-select2": "~0.0.5",
+    "select2": "~3.4.6",
+    "angular-i18n": "~1.2.4",
+    "angular-base64": "~2.0.0",
+    "requirejs": "~2.1.9",
+    "jquery-backstretch": "~2.0.4",
+    "require-css": "~0.1.2",
+    "requirejs-text": "~2.0.10",
+    "angular-blocks": "~0.1.8",
+    "ngInfiniteScroll": "1.0.0",
+    "bootstrap": "~3.0.3",
+    "bootstrap-hover-dropdown": "~2.0.1",
+    "angular-strap": "~0.7.8",
+    "jquery-cookie": "~1.4.0",
+    "jquery.uniform": "~2.1.2",
+    "jquery-validation": "~1.11.1",
+    "jquery-migrate": "~1.2.1",
+    "bootstrap-datepicker": "~1.2.0",
+    "es5-shim": "~2.1.0",
+    "angular-cookies": "~1.2.0",
+    "json3": "~3.2.4",
+    "blockui": "*"
+  },
+  "devDependencies": {
+    "angular-mocks": "~1.2.0",
+    "angular-scenario": "~1.2.0"
+  },
+  "resolutions": {
+    "bootstrap": "~3.0.3",
+    "jquery": "~1.10.2",
+    "angular": ">=1.2.10"
+  }
+}
