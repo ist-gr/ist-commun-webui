@@ -12,6 +12,8 @@ require.config({
     'requirejs-text': '../bower_components/requirejs-text',
 
     'togetherjs': 'https://togetherjs.com/togetherjs-min',
+
+    'bootstrap-css': '../bower_components/bootstrap/dist/css/bootstrap',
     'bootstrap.affix': '../bower_components/bootstrap/js/affix',
     'bootstrap.alert': '../bower_components/bootstrap/js/alert',
     'bootstrap.button': '../bower_components/bootstrap/js/button',
@@ -60,7 +62,9 @@ require.config({
     'ng-infinite-scroll': '../bower_components/ngInfiniteScroll/build/ng-infinite-scroll',
     'ng-grid': '../bower_components/ng-grid',
 
-    'appConstants': '../bower_components/ist-commun-webui/app/modules/appConstantsTemplate' // XXX This path works only for the client app
+    // XXX "../bower_components/ist-commun-webui" works only for the client app
+    'appConstants': '../bower_components/ist-commun-webui/app/modules/appConstantsTemplate',
+    'de-metr': '../bower_components/ist-commun-webui/app/de-metr'
   },
   shim: {
     'bootstrap.affix': {deps: ['jquery']},
@@ -87,7 +91,7 @@ require.config({
     'jquery-validate': {deps: ['jquery']},
     'jquery-validate.el': {deps: ['jquery-validate']},
 
-    'select2': {deps: ['jquery']},
+    'select2': {deps: ['jquery', 'css!de-metr/select2_metro-minimized']},
 
     'angular-file-upload-html5-shim': {deps: []},
     'angular': {deps: ['angular-file-upload-html5-shim', 'jquery'], exports: 'angular'},
@@ -101,7 +105,7 @@ require.config({
     'angular-sanitize': {deps: ['angular']},
     'angular-base64': {deps: ['angular']},
     'angular-blocks': {deps: ['angular']},
-    'angular-strap': {deps: ['angular', 'bootstrap-datepicker', 'bootstrap-datepicker.el', 'bootstrap-hover-dropdown', 'bootstrap.transition', 'bootstrap.modal']},
+    'angular-strap': {deps: ['angular', 'bootstrap-datepicker', 'bootstrap-datepicker.el', 'bootstrap-hover-dropdown', 'bootstrap.transition', 'bootstrap.modal', 'bootstrap.tooltip']},
     'angular-ui-select2': {deps: ['angular', 'select2']},
     'angular-busy/angular-busy': {deps: ['angular', 'angular-animate', 'css!angular-busy/angular-busy']},
     'ng-infinite-scroll': {deps: ['angular']},
