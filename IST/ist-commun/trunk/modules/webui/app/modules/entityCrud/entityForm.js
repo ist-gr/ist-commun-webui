@@ -2,6 +2,7 @@
 define(['angular',
   './entityCrudUtil',
   'text!./entityForm.html',
+  'appConstants',
   'jquery',
   './selectFrom',
   './directives',
@@ -9,7 +10,7 @@ define(['angular',
   'angular-resource',
   'angular-sanitize',
   '../support/dialogs/dialogs',
-  '../core'], function(angular, util, entityFormTemplate, $) {
+  '../core'], function(angular, util, entityFormTemplate, appConstants, $) {
   'use strict';
 
   var module = angular.module('entityCrud.form', ['ngResource', 'ngRoute', 'core', 'dialogs', 'entityCrud.directives', 'entityCrud.selectFrom', 'ngSanitize']);
@@ -101,7 +102,7 @@ define(['angular',
     $scope.isNew = /new$/.test($location.path());
 
     $scope.$watch('entityDefinition.entityDisplayName ? entityDefinition.entityDisplayName(entity) : entity.name', function(name) {
-      $window.document.title = $scope.entityDefinition.name.singular + ' ' + ($scope.isNew ? '- Νέα εγγραφή' : name) + ' - HCAA AVIS';
+      $window.document.title = $scope.entityDefinition.name.singular + ' ' + ($scope.isNew ? '- Νέα εγγραφή' : name) + ' - ' + appConstants.appName;
     });
 
     function createResource(entityDefinition) {

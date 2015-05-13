@@ -1,4 +1,7 @@
 [x] main.js of client app should not include requirejs configuration of framework. See also https://github.com/jrburke/requirejs/wiki/Patterns-for-separating-config-from-the-main-module
-[ ] Remove metronic dependency from framework
+[x] Remove metronic dependency from framework
+[x] Added support for parametric appName and copyright via `appConstantsTemplate.js` which can be overriden by a client application
+[x] Added support for overriding css and html in client applications using aliases in `requirejs-config.js` of a client application
 [x] Document contribution
 [ ] Document usage
+[ ] Test that de-metr has been included in the `dist` folder after running `grunt build` in a client application
