@@ -5,27 +5,27 @@ define(['angular',
         'text!./403.html',
         'text!./entityRevisionForm.html',
         'text!./entityRevisionCriteria.html',
+        'appConstants',
         'jquery',
         'angular-route',
         'angular-base64',
         'ng-infinite-scroll',
         '../core',
         './http-auth-interceptor',
-        'metronic-app',
-        'metronic-login',
-        'css!metronic/css/pages/login',
-        'css!metronic/css/pages/coming-soon'],function(angular, entityCrud, loginTemplate, unauthorizedTemplate, entityRevisionFormTemplate, entityRevisionCriteriaTemplate, $) {
+        'css!de-metr/login-minimized',
+        'css!de-metr/coming-soon-minimized'
+        ],function(angular, entityCrud, loginTemplate, unauthorizedTemplate, entityRevisionFormTemplate, entityRevisionCriteriaTemplate, appConstants, $) {
   
   'use strict';
   
   var LOGIN_TEMPLATE_URL = 'modules/security/login.html';
   var UNAUTHORIZED_TEMPLATE_URL = 'modules/security/403.html';
-  var ENTITY_REVISION_CRITERIA_TEMPLATE_URL = 'security/entityRevisionCriteria.html';
+  var ENTITY_REVISION_CRITERIA_TEMPLATE_URL = 'modules/security/entityRevisionCriteria.html';
 
   // XXX The authentication logic is a quick n'dirty solution based on jhipster's authentication but without need for java sessions
   // TODO Refactor it to be simpler and beautiful
 
-  var module = angular.module('security', ['ngRoute', 'base64', 'core', 'http-auth-interceptor','dialogs','infinite-scroll']);
+  var module = angular.module('security', ['ngRoute', 'ngResource', 'base64', 'core', 'http-auth-interceptor','dialogs','infinite-scroll', 'entityCrud']);
   angular.module('infinite-scroll').value('THROTTLE_MILLISECONDS', 250);
 
   module.run(['$templateCache', function($templateCache) {
@@ -37,7 +37,7 @@ define(['angular',
   module.config(['$routeProvider', function ($routeProvider) {
     $routeProvider
       .when('/login', {
-        title: 'Είσοδος - HCAA AVIS',
+        title: 'Είσοδος - '+appConstants.appName,
         templateUrl: LOGIN_TEMPLATE_URL,
         controller: 'LoginCtrl',
         isUnprotected: true
@@ -263,9 +263,7 @@ define(['angular',
   module.controller('LoginCtrl',
       ['$scope', 'userService', '$location',
         function ($scope, userService, $location) {
-          // TODO: Refactor to avoid the 2 lines below
-          App.init(); // init layout and core plugins
-          Login.init();
+          $scope.appConstants = appConstants;
           $scope.rememberMe = true;
           $scope.login = function() {
             delete $scope.errorMessage;
@@ -400,7 +398,7 @@ define(['angular',
     });
   };
 
-  module.factory('UserDefinition', ['UserAPI', '$rootScope', 'RoleGroupDefinition', /*'AirportDefinition',*/ '$http', 'apiService', 'PasswordPolicyDefinition', function(UserAPI, $rootScope, RoleGroupDefinition, /*AirportDefinition,*/ $http, apiService, PasswordPolicyDefinition) {
+  module.factory('UserDefinition', ['UserAPI', '$rootScope', 'RoleGroupDefinition', '$http', 'apiService', 'PasswordPolicyDefinition', function(UserAPI, $rootScope, RoleGroupDefinition, $http, apiService, PasswordPolicyDefinition) {
     return {
       domainClassName: 'gr.com.ist.commun.core.domain.security.User',
       url: 'users',
@@ -451,8 +449,7 @@ define(['angular',
         {name: 'locked', label: 'Κλειδωμένος', type: 'boolean', width: 1, optional: true},
         {name: 'email', label: 'Email', length: 50, width: 1, optional: true},
         {name: 'avatar', label: 'Avatar', length: 50, width: 1, optional: true, selectFrom: {data: avatarsList, formatResult: avatarFormatter, formatSelection: avatarFormatter}, showInList: false},
-        {name: 'roles', label: 'Ρόλοι Χρήστη', width: 2, optional: true, showInList: false, selectFrom: RoleGroupDefinition, multiValue: true}/*,
-        {name: 'airports', label: 'Αεροδρόμια', width: 2, optional: true, showInList: false, selectFrom: AirportDefinition, selectFromFinder: 'findReportingAirports', multiValue: true }*/
+        {name: 'roles', label: 'Ρόλοι Χρήστη', width: 2, optional: true, showInList: false, selectFrom: RoleGroupDefinition, multiValue: true}
       ],
       validator: validator
     };
@@ -725,7 +722,7 @@ define(['angular',
         };
       revisionSummaryService.get({q:revisionId}).$promise.then(function(revision) {
         $scope.summary = revision.content[0];
-        $window.document.title = $scope.entityDefinition.name.singular +' - ' + $scope.summary.id + ' - HCAA AVIS';
+        $window.document.title = $scope.entityDefinition.name.singular +' - ' + $scope.summary.id + ' - ' + appConstants.appName;
       });
 
       $scope.loadMore = function() {

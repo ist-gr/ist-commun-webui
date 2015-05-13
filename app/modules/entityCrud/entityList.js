@@ -3,10 +3,11 @@ define(['angular',
   './entityCrudUtil',
   'text!./entityList.html',
   'text!./entityListImport.html',
-  'jquery',
   '../support/stringUtils',
   './restApiHttp400ToExcel',
   'saveAs',
+  'appConstants',
+  'jquery',
   './selectFrom',
   './directives',
   'angular-route',
@@ -15,7 +16,7 @@ define(['angular',
   'support/dialogs/dialogs',
   'angular-file-upload',
   'ng-grid/build/ng-grid',
-  'core'], function(angular, util, entityListTemplate, entityListImportTemplate, $, stringUtils, createXlsFile, saveAs) {
+  'core'], function(angular, util, entityListTemplate, entityListImportTemplate, stringUtils, createXlsFile, saveAs, appConstants, $) {
   'use strict';
 
   var module = angular.module('entityCrud.list', ['ngResource', 'ngRoute', 'core', 'dialogs', 'entityCrud.directives', 'entityCrud.selectFrom', 'ngSanitize', 'ngGrid', 'angularFileUpload']);
@@ -395,8 +396,11 @@ define(['angular',
 
       var criteriaDescription = getCriteriaDescription(normalizedLocationSearchOpts);
 
-      $window.document.title = stringUtils.format('{0}{1} - HCAA AVIS',
-        $scope.entityDefinition.name.plural, criteriaDescription ? ' (' + criteriaDescription + ')' : '');
+      $window.document.title = stringUtils.format('{0}{1} - {2}',
+        $scope.entityDefinition.name.plural,
+        criteriaDescription ? ' (' + criteriaDescription + ')' : '',
+        appConstants.appName
+      );
 
       getPagedDataAsync(apiAction, uiSearchOptionsToEntityAPISearchOptions(normalizedLocationSearchOpts));
     }

@@ -31,9 +31,7 @@ require.config({
 
     'jquery': '../bower_components/jquery/jquery',
     'jquery-backstretch': '../bower_components/jquery-backstretch/jquery.backstretch',
-    'jquery-ui.custom': '../metronic/plugins/jquery-ui/jquery-ui-1.10.3.custom',
     'jquery-migrate': '../bower_components/jquery-migrate/jquery-migrate',
-    'jquery-slimscroll': '../metronic/plugins/jquery-slimscroll/jquery.slimscroll',
     'jquery-blockUI': '../bower_components/blockui/jquery.blockUI',
     'jquery-cookie': '../bower_components/jquery-cookie/jquery.cookie',
     'jquery-uniform': '../bower_components/jquery.uniform/jquery.uniform',
@@ -62,6 +60,7 @@ require.config({
     'ng-infinite-scroll': '../bower_components/ngInfiniteScroll/build/ng-infinite-scroll',
     'ng-grid': '../bower_components/ng-grid',
 
+    'appConstants': '../bower_components/ist-commun-webui/app/modules/appConstantsTemplate' // XXX This path works only for the client app
   },
   shim: {
     'bootstrap.affix': {deps: ['jquery']},
@@ -82,15 +81,13 @@ require.config({
 
     'jquery-backstretch': {deps: ['jquery']},
     'jquery-migrate': {deps: ['jquery']},
-    'jquery-ui.custom': {deps: ['jquery']},
-    'jquery-slimscroll': {deps: ['jquery']},
     'jquery-blockUI': {deps: ['jquery']},
     'jquery-cookie': {deps: ['jquery']},
     'jquery-uniform': {deps: ['jquery']},
     'jquery-validate': {deps: ['jquery']},
     'jquery-validate.el': {deps: ['jquery-validate']},
 
-    'select2': {deps: ['jquery', 'css!metronic/plugins/select2/select2_metro']},
+    'select2': {deps: ['jquery']},
 
     'angular-file-upload-html5-shim': {deps: []},
     'angular': {deps: ['angular-file-upload-html5-shim', 'jquery'], exports: 'angular'},
