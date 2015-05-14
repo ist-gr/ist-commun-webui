@@ -63,7 +63,6 @@ require.config({
     'ng-grid': '../bower_components/ng-grid',
 
     // XXX "../bower_components/ist-commun-webui" works only for the client app
-    'appConstants': '../bower_components/ist-commun-webui/app/modules/appConstantsTemplate',
     'de-metr': '../bower_components/ist-commun-webui/app/de-metr'
   },
   shim: {
