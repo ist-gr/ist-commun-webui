@@ -4,4 +4,3 @@
 [x] Added support for overriding css and html in client applications using aliases in `requirejs-config.js` of a client application
 [x] Document contribution
 [ ] Document usage
-[ ] Test that de-metr has been included in the `dist` folder after running `grunt build` in a client application
