@@ -13,10 +13,6 @@ After thoroughly testing your modifications, follow the steps shown below to rel
 
 1. Change the value of the `version` attribute in `bower.json` to the new semantic version number (see [semver](http://semver.org/)).
 
-2. Commit to SVN
+2. Commit and push to Github
 
-3. Copy the command:
-```
-svn copy https://hq.ist.com.gr/svn/YAR/IST/ist-commun/trunk/modules/webui https://hq.ist.com.gr/svn/YAR/IST/bower_components/ist-commun-webui/tags/0.0.0
-```
-4. Replace **0.0.0** with the new semver
+3. Release version using https://github.com/ist-gr/ist-commun-webui/releases/new
